@@ -432,6 +432,36 @@
     }
     .pricing-note a { color: var(--gold); text-decoration: underline; }
 
+    /* Period Toggle */
+    .pricing-period-toggle {
+      display: flex; justify-content: center; gap: 12px; margin-bottom: 48px; flex-wrap: wrap;
+    }
+    .period-btn {
+      padding: 10px 24px; border-radius: 8px; border: 1.5px solid rgba(255,255,255,0.15);
+      background: transparent; color: var(--text-muted); font-size: 0.9rem; font-weight: 500;
+      cursor: pointer; transition: all 0.25s ease; font-family: 'Inter', sans-serif;
+    }
+    .period-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    .period-btn.active {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      border-color: var(--gold);
+      color: #0a0a0a;
+      box-shadow: 0 4px 15px rgba(240,180,41,0.3);
+    }
+    .pricing-save-badge {
+      position: absolute; top: -12px; right: 16px;
+      background: linear-gradient(135deg, var(--green), var(--green-dark));
+      color: #fff; font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      border-radius: 100px; padding: 4px 12px;
+    }
+    .pricing-equivalent {
+      font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;
+    }
+
     /* ===== DOWNLOAD ===== */
     #download { background: var(--navy-3); }
     .download-inner {
@@ -642,11 +672,11 @@
       <a href="#features">Features</a>
       <a href="#how-it-works">How It Works</a>
       <a href="#pricing">Pricing</a>
-      <a href="https://github.com/limc9790-stack/ProfitEngineFX-releases/releases/download/v1.0.1/ProfitEngineFX.Setup.1.0.1.exe">Download</a>
+      <a href="#download">Download</a>
     </div>
     <div class="nav-cta">
       <button class="btn btn-outline" style="padding:9px 20px;font-size:0.85rem;" onclick="openModal()">Register</button>
-      <a href="https://github.com/limc9790-stack/ProfitEngineFX-releases/releases/download/v1.0.1/ProfitEngineFX.Setup.1.0.1.exe" class="btn btn-gold" style="padding:9px 20px;font-size:0.85rem;">Download</a>
+      <a href="#download" class="btn btn-gold" style="padding:9px 20px;font-size:0.85rem;">Download</a>
     </div>
     <button class="hamburger" id="hamburger" aria-label="Toggle menu" onclick="toggleMenu()">
       <span></span><span></span><span></span>
@@ -659,10 +689,10 @@
   <a href="#features" onclick="closeMenu()">Features</a>
   <a href="#how-it-works" onclick="closeMenu()">How It Works</a>
   <a href="#pricing" onclick="closeMenu()">Pricing</a>
-  <a href="https://github.com/limc9790-stack/ProfitEngineFX-releases/releases/download/v1.0.1/ProfitEngineFX.Setup.1.0.1.exe" onclick="closeMenu()">Download</a>
+  <a href="#download" onclick="closeMenu()">Download</a>
   <div class="mobile-menu-cta">
     <button class="btn btn-outline" style="justify-content:center;" onclick="closeMenu();openModal()">Register Free</button>
-    <a href="https://github.com/limc9790-stack/ProfitEngineFX-releases/releases/download/v1.0.1/ProfitEngineFX.Setup.1.0.1.exe" class="btn btn-gold" style="justify-content:center;" onclick="closeMenu()">Download App</a>
+    <a href="#download" class="btn btn-gold" style="justify-content:center;" onclick="closeMenu()">Download App</a>
   </div>
 </div>
 
@@ -836,6 +866,15 @@
       <h2 class="section-title">Simple, Transparent Pricing</h2>
       <p class="section-sub">Start free, upgrade when you're ready. All prices in Malaysian Ringgit (RM).</p>
     </div>
+
+    <!-- Period Toggle -->
+    <div class="pricing-period-toggle">
+      <button class="period-btn active" data-period="monthly" onclick="switchPricingPeriod('monthly')">Monthly</button>
+      <button class="period-btn" data-period="3months" onclick="switchPricingPeriod('3months')">3 Months</button>
+      <button class="period-btn" data-period="6months" onclick="switchPricingPeriod('6months')">6 Months</button>
+      <button class="period-btn" data-period="yearly" onclick="switchPricingPeriod('yearly')">Yearly</button>
+    </div>
+
     <div class="pricing-grid">
 
       <!-- Free Trial -->
@@ -861,15 +900,17 @@
       </div>
 
       <!-- Signal Plan -->
-      <div class="pricing-card reveal reveal-delay-1">
+      <div class="pricing-card reveal reveal-delay-1" data-plan="signal">
+        <div class="pricing-save-badge" id="signal-save-badge" style="display:none;"></div>
         <div class="pricing-tier">Standard</div>
         <div class="pricing-name">Signal Plan</div>
-        <div class="pricing-period">Billed monthly</div>
+        <div class="pricing-period" id="signal-period">Billed monthly</div>
         <div class="pricing-price">
           <span class="pricing-currency">RM</span>
-          <span class="pricing-amount">99</span>
-          <span class="pricing-mo">/month</span>
+          <span class="pricing-amount" id="signal-amount">288</span>
+          <span class="pricing-mo" id="signal-mo">/month</span>
         </div>
+        <div class="pricing-equivalent" id="signal-equivalent" style="font-size:0.85rem;color:var(--text-muted);margin-bottom:16px;"></div>
         <div class="pricing-divider"></div>
         <div class="pricing-features">
           <div class="pricing-feature"><span class="check check-green">✓</span> Everything in Free Trial</div>
@@ -879,26 +920,28 @@
           <div class="pricing-feature"><span class="check" style="background:rgba(255,255,255,0.05);color:#5a6b82;">✗</span> <span style="color:var(--text-muted)">Auto-trading execution</span></div>
           <div class="pricing-feature"><span class="check" style="background:rgba(255,255,255,0.05);color:#5a6b82;">✗</span> <span style="color:var(--text-muted)">Auto SL to breakeven</span></div>
         </div>
-        <button class="btn btn-outline" style="width:100%;justify-content:center;padding:13px;" onclick="openContactModal('Signal Plan — RM 99/month')">
+        <button class="btn btn-outline" style="width:100%;justify-content:center;padding:13px;" onclick="openContactModal(document.getElementById('signal-modal-text').textContent)">
           Subscribe Now
         </button>
         <div class="pricing-note">
-          Payment via Telegram/WhatsApp.<br/>
-          <a href="https://t.me/YourTelegramHandle" target="_blank" rel="noopener">Contact us to subscribe →</a>
+          <a href="mailto:benben941005@gmail.com">Contact us to subscribe →</a>
         </div>
+        <span id="signal-modal-text" style="display:none;">Signal Plan — RM 288/month</span>
       </div>
 
       <!-- VIP Plan -->
-      <div class="pricing-card featured reveal reveal-delay-2">
+      <div class="pricing-card featured reveal reveal-delay-2" data-plan="vip">
         <div class="pricing-badge">⭐ RECOMMENDED</div>
+        <div class="pricing-save-badge" id="vip-save-badge" style="display:none;"></div>
         <div class="pricing-tier">Professional</div>
         <div class="pricing-name">VIP Plan</div>
-        <div class="pricing-period">Billed monthly</div>
+        <div class="pricing-period" id="vip-period">Billed monthly</div>
         <div class="pricing-price">
           <span class="pricing-currency" style="color:var(--gold)">RM</span>
-          <span class="pricing-amount">199</span>
-          <span class="pricing-mo">/month</span>
+          <span class="pricing-amount" id="vip-amount">488</span>
+          <span class="pricing-mo" id="vip-mo">/month</span>
         </div>
+        <div class="pricing-equivalent" id="vip-equivalent" style="font-size:0.85rem;color:var(--gold-light);margin-bottom:16px;"></div>
         <div class="pricing-divider" style="background:rgba(240,180,41,0.2)"></div>
         <div class="pricing-features">
           <div class="pricing-feature"><span class="check check-gold">✓</span> Everything in Signal Plan</div>
@@ -908,19 +951,100 @@
           <div class="pricing-feature"><span class="check check-gold">✓</span> Daily loss limit protection</div>
           <div class="pricing-feature"><span class="check check-gold">✓</span> Priority support</div>
         </div>
-        <button class="btn btn-gold" style="width:100%;justify-content:center;padding:13px;" onclick="openContactModal('VIP Plan — RM 199/month')">
+        <button class="btn btn-gold" style="width:100%;justify-content:center;padding:13px;" onclick="openContactModal(document.getElementById('vip-modal-text').textContent)">
           Subscribe Now
         </button>
         <div class="pricing-note" style="border-color:rgba(240,180,41,0.2)">
-          Payment via Telegram/WhatsApp.<br/>
-          <a href="https://t.me/YourTelegramHandle" target="_blank" rel="noopener">Contact us to subscribe →</a>
-          <!-- Touch 'n Go integration coming soon -->
+          <a href="mailto:benben941005@gmail.com">Contact us to subscribe →</a>
         </div>
+        <span id="vip-modal-text" style="display:none;">VIP Plan — RM 488/month</span>
       </div>
 
     </div>
   </div>
 </section>
+
+<script>
+// Pricing data for multi-tier plans
+const pricingData = {
+  signal: {
+    monthly: { total: 288, period: '1 month' },
+    '3months': { total: 688, period: '3 months' },
+    '6months': { total: 1188, period: '6 months' },
+    yearly: { total: 1888, period: '1 year' }
+  },
+  vip: {
+    monthly: { total: 488, period: '1 month' },
+    '3months': { total: 1188, period: '3 months' },
+    '6months': { total: 1988, period: '6 months' },
+    yearly: { total: 3288, period: '1 year' }
+  }
+};
+
+// Calculate savings percentages
+const pricingSavings = {
+  signal: {
+    '3months': Math.round((1 - (688 / (288 * 3))) * 100),
+    '6months': Math.round((1 - (1188 / (288 * 6))) * 100),
+    yearly: Math.round((1 - (1888 / (288 * 12))) * 100)
+  },
+  vip: {
+    '3months': Math.round((1 - (1188 / (488 * 3))) * 100),
+    '6months': Math.round((1 - (1988 / (488 * 6))) * 100),
+    yearly: Math.round((1 - (3288 / (488 * 12))) * 100)
+  }
+};
+
+function switchPricingPeriod(period) {
+  // Update toggle buttons
+  document.querySelectorAll('.period-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  document.querySelector(`[data-period="${period}"]`).classList.add('active');
+
+  // Update Signal Plan
+  updatePricingCard('signal', period);
+
+  // Update VIP Plan
+  updatePricingCard('vip', period);
+}
+
+function updatePricingCard(plan, period) {
+  const data = pricingData[plan][period];
+  const monthlyPrice = Math.round(data.total / parseInt(data.period));
+
+  const amountEl = document.getElementById(`${plan}-amount`);
+  const moEl = document.getElementById(`${plan}-mo`);
+  const periodEl = document.getElementById(`${plan}-period`);
+  const equivalentEl = document.getElementById(`${plan}-equivalent`);
+  const saveBadgeEl = document.getElementById(`${plan}-save-badge`);
+  const modalTextEl = document.getElementById(`${plan}-modal-text`);
+
+  // Update main price display
+  amountEl.textContent = data.total;
+  moEl.textContent = `/${period === 'monthly' ? 'month' : period === '3months' ? '3 months' : period === '6months' ? '6 months' : 'year'}`;
+  periodEl.textContent = `Billed ${period === 'monthly' ? 'monthly' : 'every ' + (period === '3months' ? '3 months' : period === '6months' ? '6 months' : 'year')}`;
+
+  // Show monthly equivalent for longer periods
+  if (period !== 'monthly') {
+    equivalentEl.textContent = `RM ${monthlyPrice}/month equivalent`;
+    equivalentEl.style.display = 'block';
+  } else {
+    equivalentEl.style.display = 'none';
+  }
+
+  // Show savings badge
+  if (period !== 'monthly' && pricingSavings[plan][period]) {
+    saveBadgeEl.textContent = `Save ${pricingSavings[plan][period]}%`;
+    saveBadgeEl.style.display = 'inline-block';
+  } else {
+    saveBadgeEl.style.display = 'none';
+  }
+
+  // Update modal text for "Contact us" button
+  modalTextEl.textContent = `${plan.charAt(0).toUpperCase() + plan.slice(1)} Plan — RM ${data.total}/${period === 'monthly' ? 'month' : period === '3months' ? '3 months' : period === '6months' ? '6 months' : 'year'}`;
+}
+</script>
 
 <!-- ===== DOWNLOAD ===== -->
 <section id="download">
@@ -931,7 +1055,13 @@
         <h2>Download ProfitEngineFX</h2>
         <p>Get started today. The app is lightweight, easy to install, and connects to your existing MT5 terminal in seconds.</p>
         <div class="download-btn-wrap">
-          <a href="https://github.com/limc9790-stack/ProfitEngineFX-releases/releases/download/v1.0.1/ProfitEngineFX.Setup.1.0.1.exe" style="display:inline-block;padding:18px 48px;background:linear-gradient(135deg,#f0b90b,#f5d060);color:#0a0e17;font-weight:700;font-size:1.1rem;border-radius:12px;text-decoration:none;cursor:pointer;">Download for Windows</a>
+          <a href="https://github.com/limc9790-stack/ProfitEngineFX-releases/releases/download/v1.0.2/ProfitEngineFX.Setup.1.0.2.exe" class="download-btn">
+            <span class="download-btn-icon">🪟</span>
+            <span class="download-btn-text">
+              Download for Windows
+              <small>Windows 10 or later · v1.0.2</small>
+            </span>
+          </a>
         </div>
         <div class="download-reqs">
           <div class="download-req"><span>✓</span> Windows 10 or later (64-bit)</div>
@@ -979,7 +1109,7 @@
             <div class="mockup-footer">
               <span>Risk: 1% / trade</span>
               <span>Daily P&L: <span style="color:var(--green)">+4.2%</span></span>
-              <span class="mockup-version">v1.0.1</span>
+              <span class="mockup-version">v1.0.2</span>
             </div>
           </div>
         </div>
@@ -1005,15 +1135,13 @@
           <li><a href="#features">Features</a></li>
           <li><a href="#how-it-works">How It Works</a></li>
           <li><a href="#pricing">Pricing</a></li>
-          <li><a href="https://github.com/limc9790-stack/ProfitEngineFX-releases/releases/download/v1.0.1/ProfitEngineFX.Setup.1.0.1.exe">Download</a></li>
+          <li><a href="#download">Download</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Contact</h4>
         <ul>
           <li><a href="mailto:benben941005@gmail.com">benben941005@gmail.com</a></li>
-          <li><a href="https://t.me/YourTelegramHandle" target="_blank" rel="noopener">Telegram Support</a></li>
-          <li><a href="https://wa.me/60XXXXXXXXX" target="_blank" rel="noopener">WhatsApp</a></li>
         </ul>
       </div>
     </div>
@@ -1076,16 +1204,8 @@
     <h3 id="contactTitle">Subscribe to a Plan</h3>
     <p class="modal-sub" id="contactPlanLabel">Contact us to complete your subscription.</p>
     <div style="display:flex;flex-direction:column;gap:14px;margin-top:8px;">
-      <a href="https://t.me/YourTelegramHandle" target="_blank" rel="noopener"
-         class="btn btn-gold" style="justify-content:center;width:100%;padding:14px;">
-        📱 Contact via Telegram
-      </a>
-      <a href="https://wa.me/60XXXXXXXXX" target="_blank" rel="noopener"
-         class="btn btn-ghost" style="justify-content:center;width:100%;padding:14px;">
-        💬 Contact via WhatsApp
-      </a>
       <a href="mailto:benben941005@gmail.com"
-         class="btn btn-ghost" style="justify-content:center;width:100%;padding:14px;">
+         class="btn btn-gold" style="justify-content:center;width:100%;padding:14px;">
         ✉️ Email Us
       </a>
     </div>
@@ -1201,7 +1321,7 @@
         document.getElementById('registerForm').style.display = 'none';
         document.getElementById('registerSuccess').style.display = 'block';
       } else {
-        const msg = data.detail || data.message || data.error || 'Registration failed. Please try again.';
+        const msg = data.message || data.error || 'Registration failed. Please try again.';
         showError('generalError', msg);
       }
     } catch (err) {
