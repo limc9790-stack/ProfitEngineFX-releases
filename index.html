@@ -1201,7 +1201,7 @@
         document.getElementById('registerForm').style.display = 'none';
         document.getElementById('registerSuccess').style.display = 'block';
       } else {
-        const msg = data.message || data.error || 'Registration failed. Please try again.';
+        const msg = data.detail || data.message || data.error || 'Registration failed. Please try again.';
         showError('generalError', msg);
       }
     } catch (err) {
