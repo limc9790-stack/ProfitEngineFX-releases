@@ -1,0 +1,12 @@
+﻿desktop-app/
+engine/
+renderer/
+node_modules/
+dist/
+.nuitka-cache/
+*.exe
+.env
+.env.*
+*.log
+.DS_Store
+Thumbs.db
