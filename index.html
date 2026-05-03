@@ -864,7 +864,7 @@
     <div class="pricing-header">
       <span class="section-tag">Pricing Plans</span>
       <h2 class="section-title">Simple, Transparent Pricing</h2>
-      <p class="section-sub">Start free, upgrade when you're ready. All prices in Malaysian Ringgit (RM).</p>
+      <p class="section-sub">Start free, upgrade when you're ready. Pay securely with credit card or PayPal — global checkout in USD.</p>
     </div>
 
     <!-- Period Toggle -->
@@ -906,10 +906,11 @@
         <div class="pricing-name">Signal Plan</div>
         <div class="pricing-period" id="signal-period">Billed monthly</div>
         <div class="pricing-price">
-          <span class="pricing-currency">RM</span>
-          <span class="pricing-amount" id="signal-amount">288</span>
+          <span class="pricing-currency">$</span>
+          <span class="pricing-amount" id="signal-amount">99</span>
           <span class="pricing-mo" id="signal-mo">/month</span>
         </div>
+        <div class="pricing-usd" id="signal-usd" style="font-size:0.82rem;color:var(--text-muted);margin-top:-4px;margin-bottom:8px;">USD · billed in USD</div>
         <div class="pricing-equivalent" id="signal-equivalent" style="font-size:0.85rem;color:var(--text-muted);margin-bottom:16px;"></div>
         <div class="pricing-divider"></div>
         <div class="pricing-features">
@@ -926,7 +927,7 @@
         <div class="pricing-note">
           <a href="mailto:benben941005@gmail.com">Contact us to subscribe →</a>
         </div>
-        <span id="signal-modal-text" style="display:none;">Signal Plan — RM 288/month</span>
+        <span id="signal-modal-text" style="display:none;">Signal Plan — USD 99/month</span>
       </div>
 
       <!-- VIP Plan -->
@@ -937,10 +938,11 @@
         <div class="pricing-name">VIP Plan</div>
         <div class="pricing-period" id="vip-period">Billed monthly</div>
         <div class="pricing-price">
-          <span class="pricing-currency" style="color:var(--gold)">RM</span>
-          <span class="pricing-amount" id="vip-amount">488</span>
+          <span class="pricing-currency" style="color:var(--gold)">$</span>
+          <span class="pricing-amount" id="vip-amount">169</span>
           <span class="pricing-mo" id="vip-mo">/month</span>
         </div>
+        <div class="pricing-usd" id="vip-usd" style="font-size:0.82rem;color:var(--gold-light);margin-top:-4px;margin-bottom:8px;">USD · billed in USD</div>
         <div class="pricing-equivalent" id="vip-equivalent" style="font-size:0.85rem;color:var(--gold-light);margin-bottom:16px;"></div>
         <div class="pricing-divider" style="background:rgba(240,180,41,0.2)"></div>
         <div class="pricing-features">
@@ -957,7 +959,7 @@
         <div class="pricing-note" style="border-color:rgba(240,180,41,0.2)">
           <a href="mailto:benben941005@gmail.com">Contact us to subscribe →</a>
         </div>
-        <span id="vip-modal-text" style="display:none;">VIP Plan — RM 488/month</span>
+        <span id="vip-modal-text" style="display:none;">VIP Plan — USD 169/month</span>
       </div>
 
     </div>
@@ -965,33 +967,35 @@
 </section>
 
 <script>
-// Pricing data for multi-tier plans
+// Pricing data — USD primary (global). Original MYR set was 288/688/1188/
+// 1888 (Signal) and 488/1188/1988/3288 (VIP) at ~3.07 MYR per USD;
+// converted to clean USD tiers for international card payments.
 const pricingData = {
   signal: {
-    monthly: { total: 288, period: '1 month' },
-    '3months': { total: 688, period: '3 months' },
-    '6months': { total: 1188, period: '6 months' },
-    yearly: { total: 1888, period: '1 year' }
+    monthly:   { total: 99,  period: '1 month'  },
+    '3months': { total: 249, period: '3 months' },
+    '6months': { total: 449, period: '6 months' },
+    yearly:    { total: 799, period: '1 year'   }
   },
   vip: {
-    monthly: { total: 488, period: '1 month' },
-    '3months': { total: 1188, period: '3 months' },
-    '6months': { total: 1988, period: '6 months' },
-    yearly: { total: 3288, period: '1 year' }
+    monthly:   { total: 169, period: '1 month'  },
+    '3months': { total: 429, period: '3 months' },
+    '6months': { total: 749, period: '6 months' },
+    yearly:    { total: 1299, period: '1 year'  }
   }
 };
 
-// Calculate savings percentages
+// Calculate savings percentages (vs. paying monthly).
 const pricingSavings = {
   signal: {
-    '3months': Math.round((1 - (688 / (288 * 3))) * 100),
-    '6months': Math.round((1 - (1188 / (288 * 6))) * 100),
-    yearly: Math.round((1 - (1888 / (288 * 12))) * 100)
+    '3months': Math.round((1 - (249 / (99 * 3))) * 100),
+    '6months': Math.round((1 - (449 / (99 * 6))) * 100),
+    yearly:    Math.round((1 - (799 / (99 * 12))) * 100)
   },
   vip: {
-    '3months': Math.round((1 - (1188 / (488 * 3))) * 100),
-    '6months': Math.round((1 - (1988 / (488 * 6))) * 100),
-    yearly: Math.round((1 - (3288 / (488 * 12))) * 100)
+    '3months': Math.round((1 - (429 / (169 * 3))) * 100),
+    '6months': Math.round((1 - (749 / (169 * 6))) * 100),
+    yearly:    Math.round((1 - (1299 / (169 * 12))) * 100)
   }
 };
 
@@ -1017,6 +1021,7 @@ function updatePricingCard(plan, period) {
   const moEl = document.getElementById(`${plan}-mo`);
   const periodEl = document.getElementById(`${plan}-period`);
   const equivalentEl = document.getElementById(`${plan}-equivalent`);
+  const usdEl = document.getElementById(`${plan}-usd`);
   const saveBadgeEl = document.getElementById(`${plan}-save-badge`);
   const modalTextEl = document.getElementById(`${plan}-modal-text`);
 
@@ -1025,9 +1030,20 @@ function updatePricingCard(plan, period) {
   moEl.textContent = `/${period === 'monthly' ? 'month' : period === '3months' ? '3 months' : period === '6months' ? '6 months' : 'year'}`;
   periodEl.textContent = `Billed ${period === 'monthly' ? 'monthly' : 'every ' + (period === '3months' ? '3 months' : period === '6months' ? '6 months' : 'year')}`;
 
-  // Show monthly equivalent for longer periods
+  // Sub-line under price. For monthly: "USD · billed in USD". For longer
+  // periods: "USD X/mo equivalent" so the user sees the per-month rate.
+  if (usdEl) {
+    if (period === 'monthly') {
+      usdEl.textContent = 'USD · billed in USD';
+    } else {
+      usdEl.textContent = `USD ${monthlyPrice}/mo equivalent`;
+    }
+  }
+
+  // Existing equivalent line — keep for the monthly-equivalent display
+  // on longer periods (kept for back-compat; usdEl now carries it).
   if (period !== 'monthly') {
-    equivalentEl.textContent = `RM ${monthlyPrice}/month equivalent`;
+    equivalentEl.textContent = `Save ${pricingSavings[plan][period]}% vs monthly`;
     equivalentEl.style.display = 'block';
   } else {
     equivalentEl.style.display = 'none';
@@ -1042,7 +1058,7 @@ function updatePricingCard(plan, period) {
   }
 
   // Update modal text for "Contact us" button
-  modalTextEl.textContent = `${plan.charAt(0).toUpperCase() + plan.slice(1)} Plan — RM ${data.total}/${period === 'monthly' ? 'month' : period === '3months' ? '3 months' : period === '6months' ? '6 months' : 'year'}`;
+  modalTextEl.textContent = `${plan.charAt(0).toUpperCase() + plan.slice(1)} Plan — USD ${data.total}/${period === 'monthly' ? 'month' : period === '3months' ? '3 months' : period === '6months' ? '6 months' : 'year'}`;
 }
 </script>
 
@@ -1055,11 +1071,11 @@ function updatePricingCard(plan, period) {
         <h2>Download ProfitEngineFX</h2>
         <p>Get started today. The app is lightweight, easy to install, and connects to your existing MT5 terminal in seconds.</p>
         <div class="download-btn-wrap">
-          <a href="https://github.com/limc9790-stack/ProfitEngineFX-releases/releases/download/v1.7.6/ProfitEngineFX.Setup.1.7.6.exe" class="download-btn">
+          <a href="https://github.com/limc9790-stack/ProfitEngineFX-releases/releases/download/v1.7.7/ProfitEngineFX.Setup.1.7.7.exe" class="download-btn">
             <span class="download-btn-icon">🪟</span>
             <span class="download-btn-text">
               Download for Windows
-              <small>Windows 10 or later · v1.7.6</small>
+              <small>Windows 10 or later · v1.7.7</small>
             </span>
           </a>
         </div>
@@ -1109,7 +1125,7 @@ function updatePricingCard(plan, period) {
             <div class="mockup-footer">
               <span>Risk: 1% / trade</span>
               <span>Daily P&L: <span style="color:var(--green)">+4.2%</span></span>
-              <span class="mockup-version">v1.7.6</span>
+              <span class="mockup-version">v1.7.7</span>
             </div>
           </div>
         </div>
@@ -1210,7 +1226,7 @@ function updatePricingCard(plan, period) {
       </a>
     </div>
     <div class="pricing-note" style="margin-top:24px;">
-      Touch 'n Go / online payment coming soon.<br/>We'll confirm your plan and send setup instructions after payment.
+      Credit card &amp; PayPal checkout coming soon.<br/>We'll confirm your plan and send setup instructions after payment.
     </div>
   </div>
 </div>
